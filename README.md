@@ -1,2 +1,1 @@
-Project in Django.
-Still on working...
+
