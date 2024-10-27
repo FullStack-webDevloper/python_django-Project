@@ -16,7 +16,7 @@ services:
 
 # Define a static site for a frontend (optional)
   - name: my-static-site
-    type: static_site
+    type: web
     env: node
     buildCommand: "npm install && npm run build"  # Command to build the frontend
     publishPath: build  # Path to the build folder
