@@ -4,64 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>{%block title%} {%endblock%}| Puddle</title>
+    <title>{% block title %} {% endblock %} | Puddle</title>
   </head>
-  <body>
-    <nav
-      class="py-6 px-6 flex justify-between items-center border-b border-gray-200"
-    >
-      <a href="/" class="text-xl font semibold">Puddle</a>
-      <div class="space-x-6">
-        <a href="{% url 'item:new'%}" class="text-lg font semibold hover:text-gray-500"
-          >New Items</a
-        >
-        <a href="{% url 'item:items' %}" class="text-lg font semibold hover:text-gray-500">Browse</a>
+  <body class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="py-6 px-6 flex justify-between items-center border-b border-gray-200 sm:py-6 md:py-8 lg:py-10">
+      <a href="/" class="text-xl font-semibold">Puddle</a>
+      <button id="menu-toggle" onclick="toggleMenu()" class="text-gray block md:hidden focus:outline-none">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+      <div id="menu" class="hidden md:flex md:space-x-6 text-white">
+        <a href="{% url 'item:new' %}" class="text-lg font-semibold hover:text-gray-500">New Items</a>
+        <a href="{% url 'item:items' %}" class="text-lg font-semibold hover:text-gray-500">Browse</a>
         {% if request.user.is_authenticated %}
-       
-        <a
-          href="{% url 'dashboard:index' %}"
-          class="px-6 py-3 text-lg font semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700"
-          >Dashboard</a
-        >
-        <a
-          href="{% url 'conversation:inbox'%}"
-          class="px-6 py-3 text-lg font semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700"
-          >Inbox</a
-        >
-        <a
-          href="/"
-          onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-          class="px-6 py-3 text-lg font semibold bg-green-800 text-white rounded-xl hover:bg-gray-700"
-        >
-          Logout
-        </a>
-
-        <form
-          id="logout-form"
-          action="{% url 'core:logout' %}"
-          method="POST"
-          style="display: none"
-        >
-          {% csrf_token %}
-        </form>
-
+          <a href="{% url 'dashboard:index' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Dashboard</a>
+          <a href="{% url 'conversation:inbox' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Inbox</a>
+          <a href="/" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="px-6 py-3 text-lg font-semibold bg-green-800 text-white rounded-xl hover:bg-gray-700">Logout</a>
+          <form id="logout-form" action="{% url 'core:logout' %}" method="POST" style="display: none">
+            {% csrf_token %}
+          </form>
         {% else %}
-
-        <a
-          href="{% url 'core:signup' %}"
-          class="px-6 py-3 text-lg font semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700"
-          >Sign Up</a
-        >
-        <a
-          href="{% url 'core:login' %}"
-          class="px-6 py-3 text-lg font semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700"
-          >Log in</a
-        >
+          <a href="{% url 'core:signup' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Sign Up</a>
+          <a href="{% url 'core:login' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Log in</a>
         {% endif %}
       </div>
     </nav>
-    <div class="px-6 py-6">{%block content%} {%endblock%}</div>
-    <footer class="py-6 px-6 flex justify-between bg-gray-800">
+
+    <div id="mobile-menu" class="md:hidden hidden flex-col bg-white text-gray space-y-4 p-6 absolute right-0 top-16 w-48 shadow-lg z-10 rounded-b-xl">
+      <a href="{% url 'item:new' %}" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">New Items</a>
+      <a href="{% url 'item:items' %}" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">Browse</a>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'dashboard:index' %}" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">Dashboard</a>
+        <a href="{% url 'conversation:inbox' %}" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">Inbox</a>
+        <a href="/" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">Logout</a>
+        <form id="logout-form" action="{% url 'core:logout' %}" method="POST" style="display: none">
+          {% csrf_token %}
+        </form>
+      {% else %}
+        <a href="{% url 'core:signup' %}" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">Sign Up</a>
+        <a href="{% url 'core:login' %}" class="block px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-300">Log in</a>
+      {% endif %}
+    </div>
+
+    <div class="px-6 py-6 sm:flex-row gap-4">{% block content %} {% endblock %}</div>
+
+    <footer class="py-6 px-6 flex justify-between bg-gray-800 sm:py-6 md:py-8">
       <div class="w-2/3 pr-10">
         <h3 class="mb-5 font-semibold text-gray-400">About</h3>
         <p class="text-lg text-gray-500">
@@ -78,29 +66,26 @@
         <h3 class="mb-5 font-semibold text-gray-400">Menu</h3>
         <ul class="space-y-2">
           <li>
-            <a href="#" class="text-lg text-teal-500 hover:text-teal-700"
-              >About</a
-            >
+            <a href="#" class="text-lg text-teal-500 hover:text-teal-700">About</a>
           </li>
           <li>
-            <a
-              href="{% url 'core:contact'%}"
-              class="text-lg text-teal-500 hover:text-teal-700"
-              >Contact</a
-            >
+            <a href="{% url 'core:contact' %}" class="text-lg text-teal-500 hover:text-teal-700">Contact</a>
           </li>
           <li>
-            <a href="#" class="text-lg text-teal-500 hover:text-teal-700"
-              >Privacy Policy</a
-            >
+            <a href="#" class="text-lg text-teal-500 hover:text-teal-700">Privacy Policy</a>
           </li>
           <li>
-            <a href="#" class="text-lg text-teal-500 hover:text-teal-700"
-              >Term of use</a
-            >
+            <a href="#" class="text-lg text-teal-500 hover:text-teal-700">Term of use</a>
           </li>
         </ul>
       </div>
     </footer>
+
+    <script>
+      function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden'); // Toggles visibility
+      }
+    </script>
   </body>
 </html>
